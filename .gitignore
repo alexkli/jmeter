@@ -2,3 +2,4 @@ build/
 bin/ApacheJMeter.jar
 lib/*
 lib/api
+!lib/appbundler-1.0.jar

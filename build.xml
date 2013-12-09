@@ -884,7 +884,7 @@
     </java>
   </target>
 
-  <target name="package" depends="compile, prepare-resources, package-only"
+  <target name="package" depends="compile, prepare-resources, package-only, macapp"
      description="Compile everything and create the jars"/>
 
   <target name="prepare-resources"
@@ -1193,6 +1193,33 @@ run JMeter unless all the JMeter jars are added.
     <echo>If building from a release, you can get most of them from the binary archive.</echo>
     <echo>Use "ant download_jars" to download any missing jars.</echo>
     <fail message="Cannot find required classes"/>
+  </target>
+  
+  <taskdef name="bundleapp"
+    classname="com.oracle.appbundler.AppBundlerTask"   
+    classpath="lib/appbundler-1.0.jar" />
+ 
+  <target name="macapp">
+    <bundleapp outputdirectory="${build.dir}"
+      name="ApacheJMeter"
+      displayname="Apache JMeter"
+      identifier="org.apache.jmeter"
+      icon="extras/apache.icns"
+      mainclassname="org.apache.jmeter.NewDriver">
+      <classpath file="bin/ApacheJMeter.jar"/>
+    </bundleapp>
+
+    <!-- libraries (jmeter looks them up itself) -->
+    <copy todir="${build.dir}/ApacheJMeter.app/Contents/lib">
+      <fileset dir="lib"/>
+    </copy>
+
+    <!-- required config files -->
+    <copy todir="${build.dir}/ApacheJMeter.app/Contents/bin">
+      <fileset dir="bin">
+        <include name="*.properties"/>
+      </fileset>
+    </copy>
   </target>
 
   <target name="install" depends="package" description="Install JMeter. (Compiles code and creates jars)">
